@@ -14,13 +14,19 @@ class Chain(models.Model):
     contacts = models.ForeignKey('Contact', on_delete=models.CASCADE, verbose_name="Контакты",
                                  **NULLABLE)
     products = models.ManyToManyField('Product')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Поставщик')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, **NULLABLE, verbose_name='Поставщик')
     debt_to_supplier = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Задолженность',
                                            **NULLABLE)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+    is_factory = models.BooleanField(default=False, verbose_name='Завод')
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):  # у завода не может быть поставщиков
+        if self.is_factory:
+            self.parent = None
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Звено'
@@ -47,7 +53,7 @@ class Contact(models.Model):
     house_number = models.CharField(max_length=10, verbose_name='Номер дома')
 
     def __str__(self):
-        return f'{self.country} ({self.city}) - {self.street}: {self.house_number}'
+        return f'{self.chain_line}/{self.country} ({self.city}) - {self.street}: {self.house_number}'
 
     class Meta:
         verbose_name_plural = 'контакты'
