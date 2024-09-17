@@ -8,6 +8,7 @@ class User(AbstractUser):
     """User model"""
     username = None
     email = models.EmailField(unique=True, verbose_name='Почта')
+    is_active = models.BooleanField(default=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
