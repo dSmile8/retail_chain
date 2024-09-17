@@ -2,10 +2,17 @@ from django.db import models
 
 NULLABLE = {'blank': True, 'null': True}
 
+CHOICES = (
+    ('Завод', 'Завод изготовитель'),
+    ('Сеть', 'Торговая сеть'),
+    ('ИП', 'Индивидуальный предприниматель'),
+)
+
 
 class Chain(models.Model):
     name = models.CharField(max_length=100, verbose_name="Имя звена")
-    contacts = models.ForeignKey('Contact', on_delete=models.CASCADE, verbose_name="Контакты", **NULLABLE)
+    contacts = models.ForeignKey('Contact', on_delete=models.CASCADE, verbose_name="Контакты",
+                                 **NULLABLE)
     products = models.ManyToManyField('Product')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Поставщик')
     debt_to_supplier = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Задолженность',
@@ -32,7 +39,7 @@ class Product(models.Model):
 
 
 class Contact(models.Model):
-    chain = models.ForeignKey(Chain, on_delete=models.CASCADE, verbose_name='Звено', **NULLABLE),
+    chain_line = models.CharField(max_length=20, verbose_name='Звено в цепи', choices=CHOICES, **NULLABLE)
     email = models.EmailField(unique=True, verbose_name='Почта')
     country = models.CharField(max_length=50, verbose_name='Страна')
     city = models.CharField(max_length=50, verbose_name='Город')

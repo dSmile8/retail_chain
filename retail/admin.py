@@ -19,4 +19,4 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('chain', 'email', 'country', 'city', 'street', 'house_number',)
+    list_display = ('email', 'country', 'city', 'street', 'house_number', 'chain',)
